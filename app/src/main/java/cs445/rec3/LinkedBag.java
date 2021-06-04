@@ -210,7 +210,33 @@ public final class LinkedBag<E> implements BagInterface<E> {
         // TODO: Rewrite this method so that it works according to the contents
         // of the bags (this and other). Be sure to consider if other is null,
         // or a type other than LinkedBag.
-        return this == other;
+        if (other == null) {
+            return false;
+        }
+
+        if (!(other instanceof LinkedBag)) {
+            return false;
+        }
+
+        LinkedBag bOther = (LinkedBag) other;
+        if (this.getCurrentSize() != bOther.getCurrentSize()) {
+            return false;
+        }
+
+        //check the elements in the bag
+        // for (int i = 0; i < size; i++) {
+        //     if (this.getFrequencyOf(bag[i]) != bOther.getFrequencyOf(bag[i])) {
+        //         return false;
+        //     }
+        // }
+        Node current = this.head;
+        while (current != null) {
+            if (this.getFrequencyOf(current.data) != bOther.getFrequencyOf(current.data)) {
+                return false;
+            }
+            current = current.next;
+        }
+        return true;
     }
 
     /**
@@ -222,6 +248,18 @@ public final class LinkedBag<E> implements BagInterface<E> {
     public void removeDuplicatesOf(E anEntry) {
         // TODO: Write this method so that it removes all duplicate entries of
         // the given Entry from this bag while leaving the first instance of it
+        Node first = getReferenceTo(anEntry);
+        if (first != null) {
+            Node other = first;
+            while (other.next != null) {
+                if (anEntry.equals(other.next.data)) {
+                    other.next = other.next.next;
+                    size--;
+                } else {
+                    other = other.next;
+                }
+            }
+        }
     }
 
     /**
@@ -232,6 +270,11 @@ public final class LinkedBag<E> implements BagInterface<E> {
     public void removeAllDuplicates() {
         // TODO: Write this method so that it removes all duplicate entries from
         // this bag
+        Node current = this.head;
+        while (current != null) {
+            removeDuplicatesOf(current.data);
+            current = current.next;
+        }
     }
 }
 
